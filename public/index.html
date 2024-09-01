@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bodas de Pérolas - Helena & Marcelo</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            color: #555;
+            text-align: center;
+        }
+
+        .cabeçalho {
+            background-color: #f9f9f9;
+            padding: 40px 20px;
+        }
+
+        .cabeçalho h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #7b7755;
+        }
+
+        .cabeçalho p {
+            font-size: 1.2rem;
+            margin: 10px 0 20px 0;
+            color: #7b7755;
+        }
+
+        .imagem-casal {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mensagem-bodas {
+            margin: 20px auto;
+            max-width: 800px;
+            font-size: 1.2rem;
+            color: #7b7755;
+            line-height: 1.6;
+        }
+
+        .detalhes-cerimonia {
+            margin: 30px auto;
+            max-width: 600px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #7b7755;
+        }
+
+        .detalhes-cerimonia h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #7b7755;
+            text-transform: uppercase;
+        }
+
+        .detalhes-cerimonia p {
+            margin: 5px 0;
+        }
+
+        .mapa-evento {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .mapa-evento iframe {
+            border: 0;
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .evento-info {
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .evento-info p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .contador {
+            font-size: 2rem;
+            color: #7b7755;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .contador span {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .contador span div {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .contador span label {
+            font-size: 1rem;
+            color: #7b7755;
+        }
+
+        .confirmacao-presenca {
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+
+        .confirmacao-presenca h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #7b7755;
+        }
+
+        .confirmacao-presenca input[type="text"],
+        .confirmacao-presenca button,
+        .confirmacao-presenca input[type="submit"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #7b7755;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .confirmacao-presenca button {
+            background-color: transparent;
+            color: #7b7755;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .confirmacao-presenca button:hover {
+            background-color: #7b7755;
+            color: white;
+        }
+
+        .confirmacao-presenca input[type="submit"] {
+            background-color: #7b7755;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .confirmacao-presenca input[type="submit"]:hover {
+            background-color: white;
+            color: #7b7755;
+        }
+
+        .acompanhante-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .acompanhante-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #7b7755;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .remover-icone {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 10px;
+            cursor: pointer;
+            color: red;
+            font-size: 1.2rem;
+            height: 100%;
+        }
+
+        .botao-flutuante {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #7b7755;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        .botao-flutuante.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .link-direcoes {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #7b7755;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .link-direcoes:hover {
+            color: #555;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cabeçalho">
+        <h1>Helena & Marcelo</h1>
+        <p>Contagem: 12 Outubro 2024</p>
+        <img src="https://joliz.com.br/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsiZGF0YSI6Mjk4NTY1MzYsInB1ciI6ImJsb2JfaWQifX0=--4c2e7aac6198c800262ea9ca5a0f8bac7e899b06/eyJfcmFpbHMiOnsiZGF0YSI6eyJmb3JtYXQiOiJqcGciLCJzYXZlciI6eyJzdHJpcCI6dHJ1ZSwicXVhbGl0eSI6ODAsImludGVybGFjZSI6dHJ1ZSwib3B0aW1pemVfY29kaW5nIjp0cnVlLCJ0cmVsbGlzX3F1YW50Ijp0cnVlLCJxdWFudF90YWJsZSI6M30sImNyb3AiOlswLDEwNCwxMDUyLDc2Ml0sInJlc2l6ZV90b19saW1pdCI6WzgxOCxudWxsXX0sInB1ciI6InZhcmlhdGlvbiJ9fQ==--5aab44d224b203fa215bb6ab255d32f351c58b6c/70017e3c-8a3d-4b43-a9c7-c1a05ce21f84.jfif"
+            alt="Helena e Marcelo" class="imagem-casal">
+    </div>
+
+    <div class="mensagem-bodas">
+        <h2>BODAS DE PEROLAS</h2>
+        <p>O grande dia está chegando e estamos muito felizes em compartilhar com você a celebração das nossas Bodas de
+            Pérolas, comemorando 30 anos de amor e união! Sua presença será fundamental para tornar essa festa ainda
+            mais especial. Junte-se a nós para uma celebração cheia de alegria, carinho e memórias inesquecíveis!</p>
+    </div>
+
+    <!-- Detalhes da Cerimônia -->
+    <div class="detalhes-cerimonia">
+        <h3>A Cerimônia</h3>
+        <p><strong>12 de Outubro de 2024 - 20h30</strong></p>
+        <p>Sítio</p>
+        <p>Rua Três, 63, Sítio do Carlão - Chácara Novo Horizonte, Contagem - MG, 32185-600</p>
+        <p><a href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio+do+Carl%C3%A3o" target="_blank"
+                class="link-direcoes">Ver direções</a></p>
+    </div>
+
+    <!-- Mapa do Evento -->
+    <div class="mapa-evento">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d21228.50197616636!2d-44.046352025040825!3d-19.852455555502818!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa693ba23652e2f%3A0xfe339cea3067101e!2zU8OtdGlvIGRvIENhcmzDo28!5e0!3m2!1spt-BR!2sbr!4v1725227634270!5m2!1spt-BR!2sbr"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <div class="evento-info">
+        <h2>Faltam:</h2>
+        <div class="contador" id="contador">
+            <span>
+                <div id="contador-dias">0</div>
+                <label>dias</label>
+            </span>
+            <span>
+                <div id="contador-horas">00</div>
+                <label>horas</label>
+            </span>
+            <span>
+                <div id="contador-minutos">00</div>
+                <label>minutos</label>
+            </span>
+            <span>
+                <div id="contador-segundos">00</div>
+                <label>segundos</label>
+            </span>
+        </div>
+    </div>
+
+    <div class="confirmacao-presenca">
+        <h2>Confirmação de Presença</h2>
+        <form id="formConfirmacao">
+            <input type="text" id="nome" name="nome" placeholder="Seu Nome Completo" oninput="validarNomeCompleto()"
+                required>
+            <div id="error-message" class="error-message">Por favor, insira seu nome completo.</div>
+            <input type="text" id="whatsapp" name="whatsapp" placeholder="Seu WhatsApp" oninput="validarTelefone()"
+                required>
+            <div id="telefone-error-message" class="error-message">Por favor, insira um número de telefone válido com 11
+                dígitos (DDD + telefone).</div>
+            <div id="acompanhantes-container"></div>
+            <button type="button" onclick="adicionarAcompanhante()">Adicionar Acompanhante</button>
+            <input type="submit" value="Confirmação de Presença">
+        </form>
+    </div>
+
+    <!-- Botão Flutuante -->
+    <button class="botao-flutuante" onclick="rolarParaConfirmacao()">Confirmar Presença</button>
+
+    <!-- Mover o script para o final do body -->
+    <script>
+        function adicionarAcompanhante() {
+            const container = document.getElementById('acompanhantes-container');
+            const div = document.createElement('div');
+            div.className = 'acompanhante-container';
+            div.innerHTML = `
+        <input type="text" name="acompanhantes[]" placeholder="Nome Completo do Acompanhante" oninput="validarNomeCompletoAcompanhante(this)" required>
+        <span class="remover-icone" onclick="removerAcompanhante(this)">&#10060;</span>
+      `;
+            container.appendChild(div);
+
+            // Adiciona a mensagem de erro fora do bloco de entrada
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.textContent = 'Por favor, insira o nome completo do acompanhante.';
+            container.appendChild(errorMessage);
+        }
+
+        function removerAcompanhante(icone) {
+            const container = icone.parentNode;
+            container.nextElementSibling.remove(); // Remove a mensagem de erro associada
+            container.remove(); // Remove o campo de entrada
+        }
+
+        function rolarParaConfirmacao() {
+            document.querySelector('.confirmacao-presenca').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function atualizarContador() {
+            const eventoData = new Date('2024-10-12T20:30:00-03:00'); // Defina a data e hora do evento no fuso horário correto
+            const agora = new Date();
+            const diferenca = eventoData.getTime() - agora.getTime(); // Corrigindo a diferença usando getTime() para cálculos precisos
+
+            if (diferenca > 0) {
+                const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+
+                document.getElementById('contador-dias').innerHTML = dias;
+                document.getElementById('contador-horas').innerHTML = horas.toString().padStart(2, '0');
+                document.getElementById('contador-minutos').innerHTML = minutos.toString().padStart(2, '0');
+                document.getElementById('contador-segundos').innerHTML = segundos.toString().padStart(2, '0');
+            } else {
+                clearInterval(intervalo);
+                document.getElementById('contador').innerHTML = 'O evento já começou!';
+            }
+        }
+
+        const intervalo = setInterval(atualizarContador, 1000);
+
+        // Função para ocultar o botão flutuante ao chegar no final da página
+        window.onscroll = function () {
+            const botaoFlutuante = document.querySelector('.botao-flutuante');
+            const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            const windowBottom = scrollPosition + window.innerHeight;
+            const pageHeight = document.documentElement.scrollHeight;
+
+            if (windowBottom >= pageHeight - 50) {
+                botaoFlutuante.classList.add('hidden');
+            } else {
+                botaoFlutuante.classList.remove('hidden');
+            }
+        };
+
+        // Função para validar o nome completo
+        function validarNomeCompleto() {
+            const nomeInput = document.getElementById('nome');
+            const errorMessage = document.getElementById('error-message');
+            const nomeValor = nomeInput.value.trim();
+            const palavras = nomeValor.split(/\s+/);
+
+            if (palavras.length < 2) {
+                errorMessage.style.display = 'block';
+                nomeInput.style.borderColor = 'red';
+            } else {
+                errorMessage.style.display = 'none';
+                nomeInput.style.borderColor = '';
+            }
+        }
+
+        // Função para validar o nome completo dos acompanhantes
+        function validarNomeCompletoAcompanhante(input) {
+            const nomeValor = input.value.trim();
+            const palavras = nomeValor.split(/\s+/);
+            const errorMessage = input.parentNode.nextElementSibling; // A mensagem de erro é o próximo elemento após o campo
+
+            if (palavras.length < 2) {
+                errorMessage.style.display = 'block';
+                input.style.borderColor = 'red';
+            } else {
+                errorMessage.style.display = 'none';
+                input.style.borderColor = '';
+            }
+        }
+
+        // Função para adicionar máscara no telefone e validar o número de dígitos
+        function validarTelefone() {
+            const telefoneInput = document.getElementById('whatsapp');
+            const telefoneValor = telefoneInput.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+            const errorMessage = document.getElementById('telefone-error-message');
+
+            // Adiciona a máscara (XX) XXXXX-XXXX
+            let telefoneMascarado = telefoneValor;
+
+            if (telefoneValor.length > 2) {
+                telefoneMascarado = `(${telefoneValor.slice(0, 2)}) ${telefoneValor.slice(2, 7)}`;
+            }
+            if (telefoneValor.length > 7) {
+                telefoneMascarado += `-${telefoneValor.slice(7, 11)}`;
+            }
+
+            telefoneInput.value = telefoneMascarado;
+
+            // Verifica se o número tem 11 dígitos
+            if (telefoneValor.length !== 11) {
+                errorMessage.style.display = 'block';
+                telefoneInput.style.borderColor = 'red';
+            } else {
+                errorMessage.style.display = 'none';
+                telefoneInput.style.borderColor = '';
+            }
+        }
+
+        // Função para enviar o formulário para o backend e redirecionar
+        document.getElementById('formConfirmacao').onsubmit = function (event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const nome = document.getElementById('nome').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            const acompanhantes = Array.from(document.getElementsByName('acompanhantes[]')).map(input => input.value.trim());
+
+            const data = {
+                nome,
+                whatsapp,
+                acompanhantes
+            };
+
+            // Enviar para o backend usando fetch API com JSON
+            fetch('/confirmar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redireciona para a página de agradecimento após a resposta bem-sucedida
+                        window.location.href = 'agradecimento.html';
+                    } else {
+                        alert(data.message || 'Ocorreu um erro ao confirmar sua presença. Tente novamente.');
+                    }
+                })
+                .catch(error => console.error('Erro:', error));
+        };
+    </script>
+</body>
+
+</html>
