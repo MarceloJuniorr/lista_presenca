@@ -6,31 +6,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmação de Presença</title>
     <style>
-        table {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
             width: 100%;
-            border-collapse: collapse;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
+        .confirmacao {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            word-wrap: break-word;
+            /* Evita estouro de largura */
+            width: 100%;
         }
 
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
+        /* Alternar cores entre as confirmações */
+        .confirmacao:nth-child(even) {
             background-color: #f2f2f2;
         }
 
+        .confirmacao:nth-child(odd) {
+            background-color: #e9e9e9;
+        }
+
+        .nome {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .acompanhante {
+            font-size: 1em;
+            margin-left: 10px;
+        }
+
+        /* Estilo para o campo de busca */
         #filtro {
             margin-bottom: 20px;
-            padding: 8px;
+            padding: 10px;
             width: 100%;
+            font-size: 1.1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Para visualizações em dispositivos móveis */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .confirmacao {
+                font-size: 1em;
+            }
+
+            .nome {
+                font-size: 1.1em;
+            }
+
+            .acompanhante {
+                font-size: 0.9em;
+            }
+
+            .confirmacao {
+                display: block;
+                width: 100%;
+            }
         }
     </style>
     <script>
@@ -38,18 +92,33 @@
             try {
                 const response = await fetch('/confirmacoes');
                 const confirmacoes = await response.json();
-                const tabela = document.getElementById('tabela-confirmacoes').getElementsByTagName('tbody')[0];
+                const container = document.getElementById('confirmacoes-container');
 
-                // Limpar tabela antes de adicionar os novos itens
-                tabela.innerHTML = '';
+                // Limpar container antes de adicionar novos itens
+                container.innerHTML = '';
 
                 confirmacoes.forEach(confirmacao => {
-                    const row = tabela.insertRow();
+                    // Criar o bloco de confirmação principal
+                    const div = document.createElement('div');
+                    div.classList.add('confirmacao');
 
-                    row.insertCell(0).innerHTML = confirmacao.pessoa;
-                    row.insertCell(1).innerHTML = confirmacao.whatsapp;
-                    row.insertCell(2).innerHTML = new Date(confirmacao.data_confirmacao).toLocaleString();
-                    row.insertCell(3).innerHTML = confirmacao.acompanhantes.length > 0 ? confirmacao.acompanhantes.join(', ') : 'Nenhum';
+                    // Adicionar o nome da pessoa principal
+                    const nome = document.createElement('div');
+                    nome.classList.add('nome');
+                    nome.textContent = confirmacao.pessoa;
+                    div.appendChild(nome);
+
+                    // Adicionar os acompanhantes (se houver)
+                    if (confirmacao.acompanhantes.length > 0) {
+                        confirmacao.acompanhantes.forEach(acompanhante => {
+                            const acompanhanteDiv = document.createElement('div');
+                            acompanhanteDiv.classList.add('acompanhante');
+                            acompanhanteDiv.textContent = acompanhante;
+                            div.appendChild(acompanhanteDiv);
+                        });
+                    }
+
+                    container.appendChild(div);
                 });
             } catch (error) {
                 console.error('Erro ao carregar confirmações:', error);
@@ -60,20 +129,18 @@
         function filtrarTabela() {
             const input = document.getElementById('filtro');
             const filter = input.value.toLowerCase();
-            const table = document.getElementById('tabela-confirmacoes');
-            const tr = table.getElementsByTagName('tr');
+            const confirmacoes = document.getElementsByClassName('confirmacao');
 
-            for (let i = 1; i < tr.length; i++) {
-                const tdNome = tr[i].getElementsByTagName('td')[0];
-                const tdAcompanhantes = tr[i].getElementsByTagName('td')[3];
-                if (tdNome || tdAcompanhantes) {
-                    const nomeValue = tdNome.textContent || tdNome.innerText;
-                    const acompanhantesValue = tdAcompanhantes.textContent || tdAcompanhantes.innerText;
-                    if (nomeValue.toLowerCase().indexOf(filter) > -1 || acompanhantesValue.toLowerCase().indexOf(filter) > -1) {
-                        tr[i].style.display = '';
-                    } else {
-                        tr[i].style.display = 'none';
-                    }
+            for (let i = 0; i < confirmacoes.length; i++) {
+                const nome = confirmacoes[i].getElementsByClassName('nome')[0].textContent.toLowerCase();
+                const acompanhantesDivs = confirmacoes[i].getElementsByClassName('acompanhante');
+                const acompanhantes = Array.from(acompanhantesDivs).map(acompanhante => acompanhante.textContent.toLowerCase());
+                const acompanhantesTexto = acompanhantes.join(' ');
+
+                if (nome.indexOf(filter) > -1 || acompanhantesTexto.indexOf(filter) > -1) {
+                    confirmacoes[i].style.display = '';
+                } else {
+                    confirmacoes[i].style.display = 'none';
                 }
             }
         }
@@ -84,25 +151,15 @@
 </head>
 
 <body>
-    <h1>Confirmação de Presença</h1>
+    <div class="container">
+        <h1>Confirmação de Presença</h1>
 
-    <!-- Campo de busca para filtro -->
-    <input type="text" id="filtro" onkeyup="filtrarTabela()" placeholder="Filtrar por nome ou acompanhante">
+        <!-- Campo de busca para filtro -->
+        <input type="text" id="filtro" onkeyup="filtrarTabela()" placeholder="Filtrar por nome ou acompanhante">
 
-    <!-- Tabela de confirmações -->
-    <table id="tabela-confirmacoes">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>WhatsApp</th>
-                <th>Data Confirmação</th>
-                <th>Acompanhantes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Conteúdo será inserido aqui via JavaScript -->
-        </tbody>
-    </table>
+        <!-- Conteúdo das confirmações -->
+        <div id="confirmacoes-container"></div>
+    </div>
 </body>
 
 </html>
