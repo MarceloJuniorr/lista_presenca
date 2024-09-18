@@ -63,6 +63,64 @@ app.post('/confirmar', (req, res) => {
     });
 });
 
+// Rota para obter as confirmações de presença com acompanhantes
+app.get('/confirmacoes', (req, res) => {
+    const sql = `
+        SELECT cp1.id AS pessoa_id,
+               cp1.nome AS pessoa_nome,
+               cp1.whatsapp AS pessoa_whatsapp,
+               cp1.data_confirmacao AS data_confirmacao,
+               cp2.id AS principal_id,
+               cp2.nome AS principal_nome,
+               cp2.whatsapp AS principal_whatsapp
+        FROM confirmacao_presenca cp1
+        LEFT JOIN confirmacao_presenca cp2 ON cp1.pessoa_principal_id = cp2.id
+        ORDER BY cp1.data_confirmacao;
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao obter confirmações:', err);
+            return res.status(500).json({ success: false, message: 'Erro ao buscar confirmações de presença.' });
+        }
+
+        // Agrupamento de resultados para formatar os acompanhantes como array
+        const confirmacoes = {};
+
+        results.forEach(row => {
+            const pessoaId = row.pessoa_id;
+
+            if (!row.principal_id) {
+                // Pessoa principal
+                if (!confirmacoes[pessoaId]) {
+                    confirmacoes[pessoaId] = {
+                        pessoa: row.pessoa_nome,
+                        whatsapp: row.pessoa_whatsapp,
+                        data_confirmacao: row.data_confirmacao,
+                        acompanhantes: []
+                    };
+                }
+            } else {
+                // Acompanhante, adicionar ao array de acompanhantes da pessoa principal
+                if (!confirmacoes[row.principal_id]) {
+                    confirmacoes[row.principal_id] = {
+                        pessoa: row.principal_nome,
+                        whatsapp: row.principal_whatsapp,
+                        data_confirmacao: row.data_confirmacao,
+                        acompanhantes: []
+                    };
+                }
+                confirmacoes[row.principal_id].acompanhantes.push(row.pessoa_nome);
+            }
+        });
+
+        // Converter o objeto de confirmações em um array para envio no JSON
+        const confirmacoesArray = Object.values(confirmacoes);
+        res.json(confirmacoesArray);
+    });
+});
+
+
 // Iniciar o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
