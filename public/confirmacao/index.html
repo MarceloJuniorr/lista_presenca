@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Presença</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #filtro {
+            margin-bottom: 20px;
+            padding: 8px;
+            width: 100%;
+        }
+    </style>
+    <script>
+        async function carregarConfirmacoes() {
+            try {
+                const response = await fetch('/confirmacoes');
+                const confirmacoes = await response.json();
+                const tabela = document.getElementById('tabela-confirmacoes').getElementsByTagName('tbody')[0];
+
+                // Limpar tabela antes de adicionar os novos itens
+                tabela.innerHTML = '';
+
+                confirmacoes.forEach(confirmacao => {
+                    const row = tabela.insertRow();
+
+                    row.insertCell(0).innerHTML = confirmacao.pessoa;
+                    row.insertCell(1).innerHTML = confirmacao.whatsapp;
+                    row.insertCell(2).innerHTML = new Date(confirmacao.data_confirmacao).toLocaleString();
+                    row.insertCell(3).innerHTML = confirmacao.acompanhantes.length > 0 ? confirmacao.acompanhantes.join(', ') : 'Nenhum';
+                });
+            } catch (error) {
+                console.error('Erro ao carregar confirmações:', error);
+            }
+        }
+
+        // Filtro de busca na tabela
+        function filtrarTabela() {
+            const input = document.getElementById('filtro');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('tabela-confirmacoes');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                const tdNome = tr[i].getElementsByTagName('td')[0];
+                const tdAcompanhantes = tr[i].getElementsByTagName('td')[3];
+                if (tdNome || tdAcompanhantes) {
+                    const nomeValue = tdNome.textContent || tdNome.innerText;
+                    const acompanhantesValue = tdAcompanhantes.textContent || tdAcompanhantes.innerText;
+                    if (nomeValue.toLowerCase().indexOf(filter) > -1 || acompanhantesValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Carregar confirmações ao carregar a página
+        window.onload = carregarConfirmacoes;
+    </script>
+</head>
+
+<body>
+    <h1>Confirmação de Presença</h1>
+
+    <!-- Campo de busca para filtro -->
+    <input type="text" id="filtro" onkeyup="filtrarTabela()" placeholder="Filtrar por nome ou acompanhante">
+
+    <!-- Tabela de confirmações -->
+    <table id="tabela-confirmacoes">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>WhatsApp</th>
+                <th>Data Confirmação</th>
+                <th>Acompanhantes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Conteúdo será inserido aqui via JavaScript -->
+        </tbody>
+    </table>
+</body>
+
+</html>
